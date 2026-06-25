@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Naya Roquemore — NantHealth Training Module</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+/* ── NantHealth Brand Tokens ── */
+:root {
+  --nh-navy:       #0D1F38;
+  --nh-navy-deep:  #071428;
+  --nh-blue:       #1A6BAF;
+  --nh-blue-mid:   #2484D3;
+  --nh-blue-light: #5BAEE8;
+  --nh-teal:       #00A88F;
+  --nh-teal-light: #E0F6F3;
+  --nh-green:      #3BAA64;
+  --nh-green-light:#E6F5ED;
+  --nh-orange:     #E8611A;
+  --nh-orange-light:#FDF0E8;
+  --nh-red:        #D94040;
+  --nh-red-light:  #FCEAEA;
+  --nh-amber:      #C17F24;
+  --nh-amber-light:#FBF2E2;
+  --nh-purple:     #6C50C4;
+  --nh-purple-light:#EEEAF9;
+  --nh-slate:      #4A5B72;
+  --surface:       #FFFFFF;
+  --surface-2:     #F5F7FA;
+  --surface-3:     #EBF0F5;
+  --border:        rgba(10,30,60,0.09);
+  --border-md:     rgba(10,30,60,0.16);
+  --text-primary:  #0D1F38;
+  --text-secondary:#3E536B;
+  --text-muted:    #7A92A8;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-xl: 24px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10),0 2px 4px rgba(0,0,0,0.04);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--surface-2);color:var(--text-primary);min-height:100vh;line-height:1.6;font-size:15px}
+
+/* ── HEADER ── */
+.site-header{background:var(--nh-navy-deep);position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(255,255,255,0.07)}
+.header-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;height:58px;padding:0 1.5rem;gap:1rem}
+
+/* NantHealth SVG Logo in header */
+.nh-logo-wrap{display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none}
+.nh-logo-svg{height:28px;width:auto}
+.nh-logo-divider{width:1px;height:22px;background:rgba(255,255,255,0.15);margin:0 4px}
+.nh-logo-candidate{font-size:12px;color:rgba(255,255,255,0.45);font-family:'Space Grotesk',sans-serif;font-weight:500;white-space:nowrap}
+
+.header-nav{display:flex;gap:2px;flex:1;justify-content:center;flex-wrap:wrap}
+.hnav-btn{padding:6px 12px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);background:transparent;border:none;border-radius:var(--r-sm);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;white-space:nowrap;font-family:'Inter',sans-serif}
+.hnav-btn i{font-size:14px}
+.hnav-btn:hover{color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.07)}
+.hnav-btn.active{color:#fff;background:var(--nh-blue)}
+.header-req{font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);white-space:nowrap;flex-shrink:0}
+
+/* ── MOBILE NAV ── */
+.mobile-nav{display:none;overflow-x:auto;gap:6px;padding:.75rem 1rem;background:var(--nh-navy);border-bottom:1px solid rgba(255,255,255,0.08);-webkit-overflow-scrolling:touch}
+.mnav-btn{flex-shrink:0;padding:6px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.06);border:none;border-radius:99px;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:all .15s}
+.mnav-btn.active{background:var(--nh-blue);color:#fff}
+
+/* ── PAGES ── */
+.page{display:none}
+.page.active{display:block}
+.container{max-width:1140px;margin:0 auto;padding:2.5rem 1.5rem}
+
+/* ── SECTION LABEL ── */
+.sec-label{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);margin:2rem 0 1rem;display:flex;align-items:center;gap:8px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── WELCOME ── */
+.welcome-hero{background:var(--nh-navy);border-radius:var(--r-xl);padding:3rem 3.5rem;margin-bottom:2rem;position:relative;overflow:hidden}
+.welcome-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:360px;height:360px;background:radial-gradient(circle,rgba(26,107,175,0.3) 0%,transparent 70%);pointer-events:none}
+.welcome-hero::after{content:'';position:absolute;bottom:-50px;left:220px;width:240px;height:240px;background:radial-gradient(circle,rgba(0,168,143,0.18) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--nh-blue-light);margin-bottom:1.25rem}
+.hero-eyebrow i{font-size:14px}
+.welcome-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,3.5vw,42px);font-weight:700;color:#fff;line-height:1.15;letter-spacing:-.02em;margin-bottom:1rem;max-width:620px}
+.welcome-title em{color:var(--nh-teal);font-style:normal}
+.welcome-sub{font-size:14px;color:rgba(255,255,255,0.52);max-width:560px;line-height:1.7;margin-bottom:2rem}
+.hero-stats{display:flex;gap:2.5rem;flex-wrap:wrap}
+.hero-stat-num{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:#fff;line-height:1}
+.hero-stat-lbl{font-size:11px;color:rgba(255,255,255,0.38);margin-top:3px}
+
+/* ── MODULE CARDS ── */
+.module-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+.module-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;text-align:left;font-family:'Inter',sans-serif}
+.module-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.module-card.c-blue::before{background:var(--nh-blue)}
+.module-card.c-teal::before{background:var(--nh-teal)}
+.module-card.c-amber::before{background:var(--nh-amber)}
+.module-card.c-purple::before{background:var(--nh-purple)}
+.module-card.c-green::before{background:var(--nh-green)}
+.module-card.c-orange::before{background:var(--nh-orange)}
+.module-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--border-md)}
+.mc-icon{width:40px;height:40px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.mc-icon i{font-size:20px}
+.mc-icon.c-blue{background:#E6F1FB} .mc-icon.c-blue i{color:var(--nh-blue)}
+.mc-icon.c-teal{background:var(--nh-teal-light)} .mc-icon.c-teal i{color:var(--nh-teal)}
+.mc-icon.c-amber{background:var(--nh-amber-light)} .mc-icon.c-amber i{color:var(--nh-amber)}
+.mc-icon.c-purple{background:var(--nh-purple-light)} .mc-icon.c-purple i{color:var(--nh-purple)}
+.mc-icon.c-green{background:var(--nh-green-light)} .mc-icon.c-green i{color:var(--nh-green)}
+.mc-icon.c-orange{background:var(--nh-orange-light)} .mc-icon.c-orange i{color:var(--nh-orange)}
+.mc-num{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.mc-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:5px;line-height:1.3}
+.mc-desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
+.mc-arrow{position:absolute;bottom:1.25rem;right:1.25rem;font-size:16px;color:var(--text-muted);transition:transform .2s}
+.module-card:hover .mc-arrow{transform:translate(2px,-2px)}
+
+/* ── PAGE HERO ── */
+.page-hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:2rem 2.5rem;margin-bottom:2rem;display:flex;align-items:flex-start;gap:1.5rem}
+.ph-icon{width:52px;height:52px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ph-icon i{font-size:24px}
+.ph-eyebrow{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:5px}
+.ph-title{font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:600;color:var(--text-primary);letter-spacing:-.01em;margin-bottom:6px}
+.ph-sub{font-size:13px;color:var(--text-secondary);line-height:1.6;max-width:600px}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem 1.5rem;margin-bottom:.75rem}
+.card-title{font-size:14px;font-weight:500;color:var(--text-primary);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-title i{font-size:16px}
+.card-body{font-size:13px;color:var(--text-secondary);line-height:1.6}
+
+/* ── METRICS ── */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1.25rem 1rem;text-align:center}
+.metric-num{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--text-primary);line-height:1}
+.metric-lbl{font-size:11px;color:var(--text-muted);margin-top:5px;line-height:1.4}
+
+/* ── PENDO SLIDE ── */
+.navinet-mockup{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:1.5rem;box-shadow:var(--shadow-sm)}
+.nn-browser-bar{background:var(--surface-3);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px}
+.nn-dots{display:flex;gap:5px}
+.nn-dot-c{width:10px;height:10px;border-radius:50%}
+.nn-url{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:4px 14px;font-size:11px;color:var(--text-muted);text-align:center;max-width:280px;margin:0 auto}
+.nn-topbar{background:var(--nh-navy);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.nn-logo-text{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.nn-logo-text span{color:var(--nh-blue-light)}
+.nn-topnav{display:flex;gap:2px;margin-left:1.5rem}
+.nn-topnav-item{font-size:12px;color:rgba(255,255,255,0.45);padding:5px 10px;border-radius:var(--r-sm);cursor:pointer;transition:all .15s}
+.nn-topnav-item.active{color:#fff;background:rgba(255,255,255,0.1)}
+.nn-avatar{margin-left:auto;width:28px;height:28px;border-radius:50%;background:var(--nh-blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff}
+.nn-body{padding:1.5rem;position:relative;min-height:260px}
+.nn-welcome{font-size:13px;color:var(--text-secondary);margin-bottom:1rem}
+.nn-welcome strong{color:var(--text-primary)}
+.nn-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1rem}
+.nn-tile{border:1px solid var(--border);border-radius:var(--r-md);padding:14px 10px;text-align:center;background:var(--surface-2);cursor:pointer;transition:all .2s}
+.nn-tile.hl{border-color:var(--nh-blue);background:#E6F1FB;box-shadow:0 0 0 3px rgba(26,107,175,0.12)}
+.nn-tile i{font-size:22px;color:var(--text-muted);display:block;margin-bottom:6px}
+.nn-tile.hl i{color:var(--nh-blue)}
+.nn-tile-lbl{font-size:11px;color:var(--text-secondary);font-weight:500}
+.nn-tile.hl .nn-tile-lbl{color:var(--nh-blue);font-weight:600}
+.nn-empty{background:var(--surface-2);border:1px dashed var(--border-md);border-radius:var(--r-md);padding:1rem;font-size:12px;color:var(--text-muted);text-align:center}
+.pendo-tooltip{position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);width:296px;background:var(--surface);border:1px solid var(--border-md);border-radius:var(--r-lg);padding:1.25rem;box-shadow:var(--shadow-md);z-index:20;transition:opacity .2s}
+.pendo-tooltip.hidden{display:none}
+.pendo-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--nh-blue);background:#E6F1FB;padding:3px 8px;border-radius:99px;margin-bottom:8px}
+.pendo-step{font-size:10px;color:var(--text-muted);margin-bottom:4px}
+.pendo-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:6px;line-height:1.3}
+.pendo-body{font-size:12px;color:var(--text-secondary);line-height:1.55;margin-bottom:12px}
+.pendo-footer{display:flex;align-items:center;justify-content:space-between}
+.pendo-dots{display:flex;gap:4px}
+.pendo-dot{width:6px;height:6px;border-radius:50%;background:var(--surface-3);transition:background .2s}
+.pendo-dot.on{background:var(--nh-blue)}
+.pendo-actions{display:flex;gap:6px}
+.pendo-dismiss{font-size:11px;padding:5px 10px;border:1px solid var(--border-md);border-radius:var(--r-sm);background:var(--surface);color:var(--text-secondary);cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.pendo-next{font-size:11px;padding:5px 12px;border:1px solid var(--nh-blue);border-radius:var(--r-sm);background:var(--nh-blue);color:#fff;cursor:pointer;font-weight:500;transition:all .15s;font-family:'Inter',sans-serif}
+.pendo-next:hover{background:#145A96}
+.guide-complete{background:var(--nh-teal-light);border:1px solid #00A88F;border-radius:var(--r-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;display:none;align-items:center;gap:12px}
+.guide-complete i{font-size:22px;color:var(--nh-teal);flex-shrink:0}
+.gc-title{font-size:14px;font-weight:500;color:#005A4D;margin-bottom:2px}
+.gc-body{font-size:12px;color:#00776A;line-height:1.5}
+.measure-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.measure-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem;display:flex;gap:10px;align-items:flex-start}
+.measure-card i{font-size:18px;color:var(--nh-blue);margin-top:1px;flex-shrink:0}
+.measure-title{font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:2px}
+.measure-desc{font-size:11px;color:var(--text-secondary);line-height:1.45}
+
+/* ── CSAT SLIDE ── */
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1.5rem}
+.chart-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap}
+.chart-title{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:3px}
+.chart-sub{font-size:12px;color:var(--text-muted)}
+.chart-legend{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-secondary)}
+.legend-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.csat-chart-area{position:relative;width:100%;height:240px}
+.gap-item{border-radius:var(--r-md);padding:1rem 1.25rem;margin-bottom:.75rem;border-left:4px solid;background:var(--surface);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.gap-item.critical{border-left-color:var(--nh-red)}
+.gap-item.moderate{border-left-color:var(--nh-amber)}
+.gap-item.ok{border-left-color:var(--nh-teal)}
+.gap-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.gap-header i.critical{color:var(--nh-red)}
+.gap-header i.moderate{color:var(--nh-amber)}
+.gap-header i.ok{color:var(--nh-teal)}
+.gap-label{font-size:13px;font-weight:500;color:var(--text-primary)}
+.gap-score{margin-left:auto;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px}
+.gap-score.critical{background:var(--nh-red-light);color:#8B1A1A}
+.gap-score.moderate{background:var(--nh-amber-light);color:#7A4F10}
+.gap-score.ok{background:var(--nh-teal-light);color:#005A4D}
+.gap-desc{font-size:12px;color:var(--text-secondary);line-height:1.55}
+.gap-tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
+.tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:99px}
+.t-blue{background:#E6F1FB;color:#0C4A7A}
+.t-teal{background:var(--nh-teal-light);color:#005A4D}
+.t-amber{background:var(--nh-amber-light);color:#7A4F10}
+.t-purple{background:var(--nh-purple-light);color:#3E2D8F}
+.t-red{background:var(--nh-red-light);color:#8B1A1A}
+.t-green{background:var(--nh-green-light);color:#1F6B3A}
+.fix-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.fix-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem}
+.fix-num{width:28px;height:28px;border-radius:50%;background:var(--nh-navy);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:.75rem;font-family:'Space Grotesk',sans-serif}
+.fix-title{font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:6px;line-height:1.35}
+.fix-desc{font-size:12px;color:var(--text-secondary);line-height:1.55;margin-bottom:8px}
+.fix-target{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;color:var(--nh-teal);padding:3px 9px;background:var(--nh-teal-light);border-radius:99px}
+.fix-target i{font-size:12px}
+
+/* ── COLLAB SLIDE ── */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2rem}
+.team-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem}
+.team-icon{width:44px;height:44px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.team-icon i{font-size:22px}
+.team-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.team-role{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.team-desc{font-size:12px;color:var(--text-secondary);line-height:1.55;margin-bottom:.75rem}
+.team-cadence{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:500;color:var(--text-muted);padding:3px 8px;border:1px solid var(--border);border-radius:99px}
+.team-cadence i{font-size:11px}
+
+/* ── COMMS SLIDE (NEW) ── */
+.notice-box{background:var(--nh-amber-light);border:1px solid rgba(193,127,36,0.25);border-radius:var(--r-md);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:10px;align-items:flex-start}
+.notice-box i{font-size:18px;color:var(--nh-amber);flex-shrink:0;margin-top:1px}
+.notice-title{font-size:13px;font-weight:500;color:#7A4F10;margin-bottom:3px}
+.notice-body{font-size:12px;color:#7A4F10;line-height:1.5}
+.comms-flow{margin-bottom:2rem}
+.flow-team{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem}
+.flow-team-header{display:flex;align-items:center;gap:12px;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.flow-team-icon{width:40px;height:40px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.flow-team-icon i{font-size:20px}
+.flow-team-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary)}
+.flow-team-role{font-size:11px;color:var(--text-muted)}
+.flow-channels{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.flow-channel{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem 1rem}
+.fc-tool{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.fc-tool-name{font-size:12px;font-weight:500;color:var(--text-primary)}
+.fc-tool-name i{font-size:14px}
+.fc-purpose{font-size:11px;color:var(--text-secondary);line-height:1.4}
+.fc-freq{display:inline-flex;align-items:center;gap:3px;font-size:10px;color:var(--text-muted);margin-top:5px}
+.fc-freq i{font-size:11px}
+.tool-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.tb-assumed{background:#EBF0F5;color:var(--nh-slate)}
+.escalation-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem}
+.esc-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.esc-title i{font-size:18px;color:var(--nh-blue)}
+.esc-row{display:flex;align-items:flex-start;gap:12px;padding:.75rem 0;border-bottom:1px solid var(--border)}
+.esc-row:last-child{border-bottom:none}
+.esc-step{width:24px;height:24px;border-radius:50%;background:var(--nh-navy);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Space Grotesk',sans-serif;margin-top:1px}
+.esc-content{flex:1}
+.esc-action{font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:2px}
+.esc-who{font-size:12px;color:var(--text-secondary)}
+
+/* ── TOOLS SLIDE (NEW) ── */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:2rem}
+.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;position:relative;overflow:hidden}
+.tool-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px}
+.tool-card.c-blue::before{background:var(--nh-blue)}
+.tool-card.c-teal::before{background:var(--nh-teal)}
+.tool-card.c-green::before{background:var(--nh-green)}
+.tool-card.c-purple::before{background:var(--nh-purple)}
+.tool-card.c-amber::before{background:var(--nh-amber)}
+.tool-card.c-orange::before{background:var(--nh-orange)}
+.tool-card.c-navy::before{background:var(--nh-navy)}
+.tool-header{display:flex;align-items:center;gap:10px;margin-bottom:.75rem}
+.tool-icon{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tool-icon i{font-size:18px}
+.tool-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary)}
+.tool-category{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.tool-jd-quote{font-size:11px;color:var(--nh-blue);background:#E6F1FB;border-left:2px solid var(--nh-blue);padding:6px 10px;border-radius:0 var(--r-sm) var(--r-sm) 0;margin-bottom:.75rem;font-style:italic;line-height:1.45}
+.tool-use-list{list-style:none}
+.tool-use-list li{font-size:12px;color:var(--text-secondary);padding:4px 0;display:flex;align-items:flex-start;gap:6px;line-height:1.45}
+.tool-use-list li::before{content:'→';color:var(--text-muted);flex-shrink:0;margin-top:1px;font-size:11px}
+.tool-metric{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;margin-top:8px;padding:3px 9px;border-radius:99px}
+
+/* ── TIMELINE ── */
+.timeline-wrap{position:relative;padding-left:2rem}
+.timeline-line{position:absolute;left:10px;top:16px;bottom:0;width:1px;background:var(--border-md)}
+.tl-item{position:relative;margin-bottom:2rem}
+.tl-dot{position:absolute;left:-2rem;top:4px;width:20px;height:20px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;background:var(--surface)}
+.tl-dot.d30{border-color:var(--nh-blue)} .tl-dot.d30 i{color:var(--nh-blue);font-size:10px}
+.tl-dot.d60{border-color:var(--nh-teal)} .tl-dot.d60 i{color:var(--nh-teal);font-size:10px}
+.tl-dot.d90{border-color:var(--nh-purple)} .tl-dot.d90 i{color:var(--nh-purple);font-size:10px}
+.tl-header{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.tl-period{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:99px}
+.tl-period.d30{background:#E6F1FB;color:#0C4A7A}
+.tl-period.d60{background:var(--nh-teal-light);color:#005A4D}
+.tl-period.d90{background:var(--nh-purple-light);color:#3E2D8F}
+.tl-title{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--text-primary)}
+.tl-desc{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:.5rem}
+.tl-deliverable{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--text-secondary);background:var(--surface-2);border:1px solid var(--border);border-radius:99px;padding:3px 10px;margin:3px 4px 3px 0}
+.tl-deliverable i{font-size:12px}
+
+/* ── ABOUT ── */
+.about-hero{background:var(--nh-navy);border-radius:var(--r-xl);padding:2.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+.about-avatar{width:80px;height:80px;border-radius:50%;background:var(--nh-blue);border:3px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:#fff;flex-shrink:0}
+.about-name{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:#fff;letter-spacing:-.01em;margin-bottom:4px}
+.about-role{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:.75rem}
+.about-contacts{display:flex;gap:12px;flex-wrap:wrap}
+.about-contact{display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,0.55)}
+.about-contact i{font-size:13px;color:var(--nh-blue-light)}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
+.skill-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem}
+.skill-label{font-size:12px;color:var(--text-secondary);margin-bottom:8px}
+.skill-bar-bg{height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin-bottom:6px}
+.skill-bar-fill{height:100%;border-radius:99px}
+.skill-pct{font-size:11px;font-weight:600;color:var(--text-primary)}
+.certs-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.5rem}
+.cert-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:6px 12px;border:1px solid var(--border-md);border-radius:99px;background:var(--surface);color:var(--text-primary)}
+.cert-pill i{font-size:13px;color:var(--nh-blue)}
+.closing-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:2rem;text-align:center}
+.closing-title{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:8px;letter-spacing:-.01em}
+.closing-body{font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:480px;margin:0 auto 1.5rem}
+.closing-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;background:var(--nh-navy);color:#fff;border:none;border-radius:var(--r-md);font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s;text-decoration:none}
+.closing-btn:hover{background:var(--nh-blue)}
+.closing-btn i{font-size:15px}
+
+/* ── FOOTER ── */
+.site-footer{background:var(--nh-navy-deep);padding:1rem 2rem;text-align:center;font-size:11px;color:rgba(255,255,255,0.25);margin-top:4rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .header-nav,.header-req{display:none}
+  .mobile-nav{display:flex}
+  .container{padding:1.5rem 1rem}
+  .welcome-hero{padding:2rem 1.5rem}
+  .nn-tiles{grid-template-columns:repeat(2,1fr)}
+  .page-hero{flex-direction:column;gap:1rem}
+  .about-hero{flex-direction:column}
+  .flow-channels{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="header-inner">
+    <a class="nh-logo-wrap" href="#" aria-label="NantHealth Training Module home">
+      <!-- NantHealth wordmark SVG (traced from nanthealth.com) -->
+      <svg class="nh-logo-svg" viewBox="0 0 160 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NantHealth logo">
+        <text x="0" y="24" font-family="Space Grotesk, Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" letter-spacing="-0.5">Nant</text>
+        <text x="58" y="24" font-family="Space Grotesk, Arial, sans-serif" font-size="22" font-weight="700" fill="#5BAEE8" letter-spacing="-0.5">Health</text>
+      </svg>
+      <div class="nh-logo-divider" aria-hidden="true"></div>
+      <span class="nh-logo-candidate">Training Module</span>
+    </a>
+    <nav class="header-nav" aria-label="Module navigation">
+      <button class="hnav-btn active" onclick="showPage(0)" data-idx="0"><i class="ti ti-home" aria-hidden="true"></i>Overview</button>
+      <button class="hnav-btn" onclick="showPage(1)" data-idx="1"><i class="ti ti-cursor-text" aria-hidden="true"></i>Pendo walkthrough</button>
+      <button class="hnav-btn" onclick="showPage(2)" data-idx="2"><i class="ti ti-chart-bar" aria-hidden="true"></i>CSAT analysis</button>
+      <button class="hnav-btn" onclick="showPage(3)" data-idx="3"><i class="ti ti-sitemap" aria-hidden="true"></i>Collaboration plan</button>
+      <button class="hnav-btn" onclick="showPage(4)" data-idx="4"><i class="ti ti-messages" aria-hidden="true"></i>Team comms</button>
+      <button class="hnav-btn" onclick="showPage(5)" data-idx="5"><i class="ti ti-tool" aria-hidden="true"></i>Tools in role</button>
+      <button class="hnav-btn" onclick="showPage(6)" data-idx="6"><i class="ti ti-user-circle" aria-hidden="true"></i>About me</button>
+    </nav>
+    <div class="header-req">Req #1088</div>
+  </div>
+</header>
+
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <button class="mnav-btn active" onclick="showPage(0)">Overview</button>
+  <button class="mnav-btn" onclick="showPage(1)">Pendo</button>
+  <button class="mnav-btn" onclick="showPage(2)">CSAT</button>
+  <button class="mnav-btn" onclick="showPage(3)">Collaboration</button>
+  <button class="mnav-btn" onclick="showPage(4)">Team comms</button>
+  <button class="mnav-btn" onclick="showPage(5)">Tools</button>
+  <button class="mnav-btn" onclick="showPage(6)">About me</button>
+</nav>
+
+<main id="main" role="main">
+
+<!-- PAGE 0 — OVERVIEW -->
+<div class="page active" id="pg0">
+  <div class="container">
+    <div class="welcome-hero" role="region" aria-label="Welcome">
+      <p class="hero-eyebrow"><i class="ti ti-building-hospital" aria-hidden="true"></i>Senior Training &amp; Documentation Professional — NantHealth · Req #1088</p>
+      <h1 class="welcome-title">What I'd build on <em>day one</em> — and every day after.</h1>
+      <p class="welcome-sub">Rather than describing what I can do, I built a working example using NantHealth's actual products — NaviNet and Eviti Connect. This module demonstrates the six core capabilities this role requires: Pendo guidance, CSAT-driven gap analysis, cross-functional collaboration, stakeholder communication, and every technical tool named in the job description.</p>
+      <div class="hero-stats" role="list">
+        <div class="hero-stat" role="listitem"><div class="hero-stat-num">5+</div><div class="hero-stat-lbl">Years healthcare training</div></div>
+        <div class="hero-stat" role="listitem"><div class="hero-stat-num">200+</div><div class="hero-stat-lbl">Clinical staff trained</div></div>
+        <div class="hero-stat" role="listitem"><div class="hero-stat-num">4.7<span style="font-size:16px;font-weight:400">/5</span></div><div class="hero-stat-lbl">Avg. onboarding CSAT</div></div>
+        <div class="hero-stat" role="listitem"><div class="hero-stat-num">94<span style="font-size:16px;font-weight:400">/100</span></div><div class="hero-stat-lbl">ATS match score</div></div>
+      </div>
+    </div>
+    <p class="sec-label">What's inside — six working demonstrations</p>
+    <div class="module-cards">
+      <button class="module-card c-blue" onclick="showPage(1)" aria-label="Pendo walkthrough section">
+        <div class="mc-icon c-blue"><i class="ti ti-cursor-text" aria-hidden="true"></i></div>
+        <div class="mc-num">01</div>
+        <div class="mc-title">Pendo in-app walkthrough</div>
+        <div class="mc-desc">Clickable NaviNet onboarding guide for new providers — built around E&amp;B check workflow.</div>
+        <i class="ti ti-arrow-up-right mc-arrow" aria-hidden="true"></i>
+      </button>
+      <button class="module-card c-teal" onclick="showPage(2)" aria-label="CSAT gap analysis section">
+        <div class="mc-icon c-teal"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
+        <div class="mc-num">02</div>
+        <div class="mc-title">CSAT gap analysis</div>
+        <div class="mc-desc">Live dashboard identifying training satisfaction gaps and a prioritized fix plan.</div>
+        <i class="ti ti-arrow-up-right mc-arrow" aria-hidden="true"></i>
+      </button>
+      <button class="module-card c-amber" onclick="showPage(3)" aria-label="Collaboration plan section">
+        <div class="mc-icon c-amber"><i class="ti ti-sitemap" aria-hidden="true"></i></div>
+        <div class="mc-num">03</div>
+        <div class="mc-title">30/60/90 collaboration plan</div>
+        <div class="mc-desc">How I'd partner with Product, CS, Support, and Implementation from day one.</div>
+        <i class="ti ti-arrow-up-right mc-arrow" aria-hidden="true"></i>
+      </button>
+      <button class="module-card c-purple" onclick="showPage(4)" aria-label="Team communications section">
+        <div class="mc-icon c-purple"><i class="ti ti-messages" aria-hidden="true"></i></div>
+        <div class="mc-num">04</div>
+        <div class="mc-title">Team communications</div>
+        <div class="mc-desc">Exactly how I'd keep every stakeholder updated — by team, cadence, and channel.</div>
+        <i class="ti ti-arrow-up-right mc-arrow" aria-hidden="true"></i>
+      </button>
+      <button class="module-card c-green" onclick="showPage(5)" aria-label="Tools in role section">
+        <div class="mc-icon c-green"><i class="ti ti-tool" aria-hidden="true"></i></div>
+        <div class="mc-num">05</div>
+        <div class="mc-title">Tools in this role</div>
+        <div class="mc-desc">How I'd use every technical tool named in the job description — mapped to real tasks.</div>
+        <i class="ti ti-arrow-up-right mc-arrow" aria-hidden="true"></i>
+      </button>
+      <button class="module-card c-orange" onclick="showPage(6)" aria-label="About me section">
+        <div class="mc-icon c-orange"><i class="ti ti-user-circle" aria-hidden="true"></i></div>
+        <div class="mc-num">06</div>
+        <div class="mc-title">About me</div>
+        <div class="mc-desc">Skills, certifications, and why this role — not just any training role.</div>
+        <i class="ti ti-arrow-up-right mc-arrow" aria-hidden="true"></i>
+      </button>
+    </div>
+    <p class="sec-label">NantHealth products covered</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem">
+      <div class="card"><div class="card-title"><i class="ti ti-network" aria-hidden="true" style="color:var(--nh-blue)"></i>NaviNet — Payer-provider portal</div><div class="card-body">America's leading payer-provider collaboration platform. 170,000+ active provider offices, 2,000+ hospitals, 1,000+ health plans. Pendo walkthrough and CSAT analysis are built around NaviNet workflows.</div></div>
+      <div class="card"><div class="card-title"><i class="ti ti-stethoscope" aria-hidden="true" style="color:var(--nh-teal)"></i>Eviti Connect — Treatment validation</div><div class="card-body">Evidence-based decision support for oncology and autoimmune authorization. Identified as the second-lowest CSAT area — the gap analysis proposes a clinical SME VILT to close it.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 1 — PENDO -->
+<div class="page" id="pg1">
+  <div class="container">
+    <div class="page-hero">
+      <div class="ph-icon" style="background:#E6F1FB"><i class="ti ti-cursor-text" aria-hidden="true" style="color:var(--nh-blue)"></i></div>
+      <div>
+        <div class="ph-eyebrow">Section 01 — Pendo in-app guidance</div>
+        <h2 class="ph-title">NaviNet provider onboarding walkthrough</h2>
+        <p class="ph-sub">A working simulation of the Pendo tooltip sequence I'd deploy for new NaviNet providers completing their first eligibility and benefits check — one of the highest-friction, highest-support-ticket workflows in the platform. Click through each step to see how the guide flows.</p>
+      </div>
+    </div>
+    <div class="navinet-mockup" role="region" aria-label="NaviNet app mockup with Pendo guide">
+      <div class="nn-browser-bar" aria-hidden="true">
+        <div class="nn-dots"><div class="nn-dot-c" style="background:#FCEAEA"></div><div class="nn-dot-c" style="background:#FBF2E2"></div><div class="nn-dot-c" style="background:var(--nh-green-light)"></div></div>
+        <div class="nn-url">portal.navinet.net/dashboard</div>
+      </div>
+      <div class="nn-topbar">
+        <span class="nn-logo-text">Navi<span>Net</span></span>
+        <nav class="nn-topnav"><span class="nn-topnav-item active">Dashboard</span><span class="nn-topnav-item">Eligibility &amp; Benefits</span><span class="nn-topnav-item">Claims</span><span class="nn-topnav-item">Authorizations</span></nav>
+        <div class="nn-avatar" aria-label="User initials DR">DR</div>
+      </div>
+      <div class="nn-body">
+        <p class="nn-welcome">Welcome back, <strong>Dr. Rivera</strong> — your dashboard.</p>
+        <div class="nn-tiles" role="list">
+          <div class="nn-tile hl" role="listitem" aria-label="Eligibility and Benefits, highlighted"><i class="ti ti-id-badge" aria-hidden="true"></i><div class="nn-tile-lbl">E&amp;B check</div></div>
+          <div class="nn-tile" role="listitem"><i class="ti ti-file-invoice" aria-hidden="true"></i><div class="nn-tile-lbl">Claim status</div></div>
+          <div class="nn-tile" role="listitem"><i class="ti ti-shield-check" aria-hidden="true"></i><div class="nn-tile-lbl">Auth submit</div></div>
+          <div class="nn-tile" role="listitem"><i class="ti ti-chart-line" aria-hidden="true"></i><div class="nn-tile-lbl">Reports</div></div>
+        </div>
+        <div class="nn-empty">No recent activity — complete your first E&amp;B check to get started.</div>
+        <div class="pendo-tooltip" id="pendoTooltip" role="dialog" aria-label="Pendo onboarding guide" aria-live="polite">
+          <div class="pendo-badge"><i class="ti ti-sparkles" aria-hidden="true"></i>Guided tour · Pendo</div>
+          <div class="pendo-step" id="pStep">Step 1 of 4</div>
+          <div class="pendo-title" id="pTitle">Welcome to NaviNet!</div>
+          <div class="pendo-body" id="pBody">This quick walkthrough guides you through your first eligibility and benefits check. Most providers complete it in under 3 minutes. Start with the highlighted E&amp;B tile above.</div>
+          <div class="pendo-footer">
+            <div class="pendo-dots" aria-label="Step progress"><div class="pendo-dot on" id="pd0"></div><div class="pendo-dot" id="pd1"></div><div class="pendo-dot" id="pd2"></div><div class="pendo-dot" id="pd3"></div></div>
+            <div class="pendo-actions"><button class="pendo-dismiss" onclick="skipGuide()">Dismiss</button><button class="pendo-next" id="pNextBtn" onclick="nextPendoStep()">Next →</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="guide-complete" id="guideComplete" role="status"><i class="ti ti-circle-check" aria-hidden="true"></i><div><div class="gc-title">Walkthrough complete — provider onboarded</div><div class="gc-body">In Pendo, I'd log this as a completion event and track it in the onboarding funnel. Providers who drop off mid-guide receive a targeted follow-up tooltip on their next login — automatically.</div></div></div>
+    <p class="sec-label">What I'd measure after deploying this guide</p>
+    <div class="measure-grid">
+      <div class="measure-card"><i class="ti ti-trending-up" aria-hidden="true"></i><div><div class="measure-title">Guide completion rate</div><div class="measure-desc">Per cohort and health plan in Pendo Analytics — identifies which provider groups need direct outreach.</div></div></div>
+      <div class="measure-card"><i class="ti ti-arrow-down-right" aria-hidden="true"></i><div><div class="measure-title">Step-level drop-off</div><div class="measure-desc">Step 3 (member ID entry) typically shows highest drop-off — signals where the tooltip or UX needs work.</div></div></div>
+      <div class="measure-card"><i class="ti ti-chart-dots" aria-hidden="true"></i><div><div class="measure-title">Feature adoption delta</div><div class="measure-desc">E&amp;B usage before vs. after guide deployment, segmented by new vs. returning providers.</div></div></div>
+      <div class="measure-card"><i class="ti ti-ticket" aria-hidden="true"></i><div><div class="measure-title">Support ticket delta</div><div class="measure-desc">Reduction in E&amp;B-related support tickets 30 days post-deployment — reported monthly to CS leadership.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2 — CSAT -->
+<div class="page" id="pg2">
+  <div class="container">
+    <div class="page-hero">
+      <div class="ph-icon" style="background:var(--nh-teal-light)"><i class="ti ti-chart-bar" aria-hidden="true" style="color:var(--nh-teal)"></i></div>
+      <div>
+        <div class="ph-eyebrow">Section 02 — Training effectiveness &amp; gap analysis</div>
+        <h2 class="ph-title">NaviNet training CSAT — Q1 gap analysis</h2>
+        <p class="ph-sub">How I'd present training satisfaction data to leadership, identify root causes, and walk Product, Customer Success, Support, and Implementation through a prioritized fix plan using data NantHealth already collects post-training.</p>
+      </div>
+    </div>
+    <div class="metric-grid">
+      <div class="metric"><div class="metric-num">3.6<span style="font-size:16px;font-weight:400">/5</span></div><div class="metric-lbl">Avg. CSAT — NaviNet providers (Q1)</div></div>
+      <div class="metric"><div class="metric-num" style="color:var(--nh-red)">4.2</div><div class="metric-lbl">Org target CSAT benchmark</div></div>
+      <div class="metric"><div class="metric-num" style="color:var(--nh-red)">−0.6</div><div class="metric-lbl">Gap vs. target</div></div>
+      <div class="metric"><div class="metric-num">62%</div><div class="metric-lbl">Module completion rate</div></div>
+    </div>
+    <div class="chart-wrap" role="region" aria-label="CSAT by training topic">
+      <div class="chart-header">
+        <div><div class="chart-title">CSAT by training topic — Q1</div><div class="chart-sub">n=214 providers surveyed across NaviNet and Eviti Connect workflows</div></div>
+        <div class="chart-legend"><div class="legend-item"><div class="legend-swatch" style="background:var(--nh-blue)"></div>CSAT score</div><div class="legend-item"><div class="legend-swatch" style="background:var(--nh-red)"></div>Target (4.2)</div></div>
+      </div>
+      <div class="csat-chart-area"><canvas id="csatChart" role="img" aria-label="Bar chart: Auth workflows 2.8, Eviti Connect 3.2, E&B checks 3.6, Claims 3.9, Portal nav 4.3. Target 4.2.">Auth workflows 2.8/5, Eviti Connect 3.2/5, E&amp;B checks 3.6/5, Claims 3.9/5, Portal navigation 4.3/5. Target: 4.2/5.</canvas></div>
+    </div>
+    <p class="sec-label">Gap diagnosis</p>
+    <div class="gap-item critical"><div class="gap-header"><i class="ti ti-alert-circle critical" aria-hidden="true"></i><span class="gap-label">Prior authorization workflows</span><span class="gap-score critical">2.8 / 5</span></div><div class="gap-desc"><strong>Root cause:</strong> Static PDF walkthroughs with no interactivity. Providers submitting Eviti Connect authorizations for oncology and autoimmune cases report the real workflow differs significantly from training. No scenario-based simulation exists.</div><div class="gap-tags"><span class="tag t-red">Critical</span><span class="tag t-blue">iSpring rebuild</span><span class="tag t-purple">Clinical SME required</span><span class="tag t-amber">Top support ticket driver</span></div></div>
+    <div class="gap-item critical"><div class="gap-header"><i class="ti ti-alert-circle critical" aria-hidden="true"></i><span class="gap-label">Eviti Connect treatment validation</span><span class="gap-score critical">3.2 / 5</span></div><div class="gap-desc"><strong>Root cause:</strong> Training explains that a treatment can be flagged but not why. Providers don't understand the evidence-based logic behind Eviti Connect's decision support — creating distrust in the tool and increasing payer-provider friction.</div><div class="gap-tags"><span class="tag t-red">Critical</span><span class="tag t-teal">VILT with Clinical SME</span><span class="tag t-blue">Confluence KB article</span></div></div>
+    <div class="gap-item moderate"><div class="gap-header"><i class="ti ti-alert-triangle moderate" aria-hidden="true"></i><span class="gap-label">Eligibility &amp; benefits checks</span><span class="gap-score moderate">3.6 / 5</span></div><div class="gap-desc"><strong>Root cause:</strong> Pendo guide not yet deployed. Providers who discover the E&amp;B workflow independently complete it faster than those following the current PDF job aid.</div><div class="gap-tags"><span class="tag t-amber">Moderate</span><span class="tag t-blue">Pendo guide ready to deploy</span><span class="tag t-teal">Quick win — 6 weeks</span></div></div>
+    <div class="gap-item ok"><div class="gap-header"><i class="ti ti-circle-check ok" aria-hidden="true"></i><span class="gap-label">Portal navigation</span><span class="gap-score ok">4.3 / 5</span></div><div class="gap-desc"><strong>Status:</strong> Existing Pendo welcome guide and VILT session performing above target. Maintain and refresh at next product release cycle.</div><div class="gap-tags"><span class="tag t-teal">On track</span><span class="tag t-blue">Refresh at release</span></div></div>
+    <p class="sec-label">Fix plan</p>
+    <div class="fix-grid">
+      <div class="fix-card"><div class="fix-num">1</div><div class="fix-title">Auth workflows — iSpring scenario-based module</div><div class="fix-desc">Branching scenario: provider selects diagnosis code, submits oncology auth, receives rejection, corrects and resubmits. Co-built with Product and Clinical SME.</div><span class="fix-target"><i class="ti ti-target" aria-hidden="true"></i>Target: 4.0+ within one quarter</span></div>
+      <div class="fix-card"><div class="fix-num">2</div><div class="fix-title">Eviti Connect — Clinical SME VILT session</div><div class="fix-desc">30-min VILT explaining why treatments are flagged, not just that they are. Recorded and published to Confluence knowledge base with Eviti release notes.</div><span class="fix-target"><i class="ti ti-target" aria-hidden="true"></i>Target: 3.8+ within one quarter</span></div>
+      <div class="fix-card"><div class="fix-num">3</div><div class="fix-title">E&amp;B checks — deploy Pendo guide from section 01</div><div class="fix-desc">Deploy immediately. Track completion and drop-off. Align with Customer Success to identify lowest-adoption accounts and prioritize direct outreach.</div><span class="fix-target"><i class="ti ti-target" aria-hidden="true"></i>Target: 4.2+ within 6 weeks</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3 — COLLAB -->
+<div class="page" id="pg3">
+  <div class="container">
+    <div class="page-hero">
+      <div class="ph-icon" style="background:var(--nh-amber-light)"><i class="ti ti-sitemap" aria-hidden="true" style="color:var(--nh-amber)"></i></div>
+      <div>
+        <div class="ph-eyebrow">Section 03 — Cross-functional collaboration</div>
+        <h2 class="ph-title">30/60/90-day collaboration plan</h2>
+        <p class="ph-sub">How I'd work across Product, Customer Success, Support, and Implementation in my first 90 days to surface documentation needs, close training gaps, and establish sustainable partnerships across the Account Management team.</p>
+      </div>
+    </div>
+    <p class="sec-label">Team responsibilities — mirrored from the job description</p>
+    <div class="team-grid">
+      <div class="team-card"><div class="team-icon" style="background:#E6F1FB"><i class="ti ti-package" aria-hidden="true" style="color:var(--nh-blue)"></i></div><div class="team-name">Product</div><div class="team-role">Content source of truth</div><div class="team-desc">Attends sprint reviews ahead of feature changes. Maintains a documentation backlog tied to the Product release calendar. Owns the link between release notes and knowledge base updates in Confluence and SharePoint.</div><span class="team-cadence"><i class="ti ti-calendar" aria-hidden="true"></i>Sprint reviews + release cycle</span></div>
+      <div class="team-card"><div class="team-icon" style="background:var(--nh-teal-light)"><i class="ti ti-headset" aria-hidden="true" style="color:var(--nh-teal)"></i></div><div class="team-name">Customer Success</div><div class="team-role">CSAT &amp; provider feedback</div><div class="team-desc">Closest team to provider pain points and onboarding friction. Weekly sync to review CSAT scores, escalations, and adoption blockers. Primary partner for customer-facing training and time-to-value tracking.</div><span class="team-cadence"><i class="ti ti-calendar" aria-hidden="true"></i>Weekly sync</span></div>
+      <div class="team-card"><div class="team-icon" style="background:var(--nh-amber-light)"><i class="ti ti-lifebuoy" aria-hidden="true" style="color:var(--nh-amber)"></i></div><div class="team-name">Support</div><div class="team-role">Training gap early warning</div><div class="team-desc">Ticket data surfaces undocumented workflows before they become CSAT issues. Monthly ticket review — top five recurring topics each become a KB article, Pendo tooltip, or FAQ update in Confluence.</div><span class="team-cadence"><i class="ti ti-calendar" aria-hidden="true"></i>Monthly ticket review</span></div>
+      <div class="team-card"><div class="team-icon" style="background:var(--nh-purple-light)"><i class="ti ti-arrows-right" aria-hidden="true" style="color:var(--nh-purple)"></i></div><div class="team-name">Implementation</div><div class="team-role">New-customer onboarding lens</div><div class="team-desc">Shadows at least two implementation calls in the first 30 days to hear the questions providers actually ask. These directly inform Pendo guide content and user guide rewrites.</div><span class="team-cadence"><i class="ti ti-calendar" aria-hidden="true"></i>Shadow calls + quarterly sync</span></div>
+    </div>
+    <p class="sec-label">30/60/90-day roadmap</p>
+    <div class="timeline-wrap" role="list">
+      <div class="timeline-line" aria-hidden="true"></div>
+      <div class="tl-item" role="listitem"><div class="tl-dot d30" aria-hidden="true"><i class="ti ti-number-1"></i></div><div class="tl-header"><span class="tl-period d30">Days 1–30</span><span class="tl-title">Listen &amp; audit</span></div><div class="tl-desc">Audit all training content, Confluence KB, and Pendo analytics. Shadow two Implementation calls. Pull 90-day support ticket data. Attend a Product sprint review and a CS CSAT review. Deliver a gap audit doc shared with all four team leads — no solutions yet, just a shared picture of what exists and what's broken.</div><div><span class="tl-deliverable"><i class="ti ti-file-text" aria-hidden="true"></i>Gap audit doc</span><span class="tl-deliverable"><i class="ti ti-users" aria-hidden="true"></i>All stakeholder intros done</span><span class="tl-deliverable"><i class="ti ti-chart-bar" aria-hidden="true"></i>Pendo analytics review</span></div></div>
+      <div class="tl-item" role="listitem"><div class="tl-dot d60" aria-hidden="true"><i class="ti ti-number-2"></i></div><div class="tl-header"><span class="tl-period d60">Days 31–60</span><span class="tl-title">Build &amp; deploy</span></div><div class="tl-desc">Deploy E&amp;B Pendo guide — highest CSAT lift per effort. Begin iSpring rebuild of auth workflow module with Clinical SME. Publish three Confluence KB articles covering top recurring support tickets. Establish monthly CSAT reporting cadence with CS. Begin documentation review tied to the next Product release.</div><div><span class="tl-deliverable"><i class="ti ti-cursor-text" aria-hidden="true"></i>E&B Pendo guide live</span><span class="tl-deliverable"><i class="ti ti-device-laptop" aria-hidden="true"></i>iSpring module in progress</span><span class="tl-deliverable"><i class="ti ti-book" aria-hidden="true"></i>3 KB articles published</span></div></div>
+      <div class="tl-item" role="listitem"><div class="tl-dot d90" aria-hidden="true"><i class="ti ti-number-3"></i></div><div class="tl-header"><span class="tl-period d90">Days 61–90</span><span class="tl-title">Measure &amp; scale</span></div><div class="tl-desc">Present a 90-day effectiveness report — CSAT delta by topic, Pendo guide completion, support ticket reduction. Propose quarterly documentation review tied to Product release calendar. Launch auth workflow iSpring module and begin CSAT tracking. Present next quarter's training priorities to leadership.</div><div><span class="tl-deliverable"><i class="ti ti-report-analytics" aria-hidden="true"></i>90-day report to leadership</span><span class="tl-deliverable"><i class="ti ti-refresh" aria-hidden="true"></i>Quarterly doc review cycle</span><span class="tl-deliverable"><i class="ti ti-rocket" aria-hidden="true"></i>Auth module launched</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4 — TEAM COMMS (NEW) -->
+<div class="page" id="pg4">
+  <div class="container">
+    <div class="page-hero">
+      <div class="ph-icon" style="background:var(--nh-purple-light)"><i class="ti ti-messages" aria-hidden="true" style="color:var(--nh-purple)"></i></div>
+      <div>
+        <div class="ph-eyebrow">Section 04 — Stakeholder communication plan</div>
+        <h2 class="ph-title">How I'd keep every team informed and aligned</h2>
+        <p class="ph-sub">The job description names four cross-functional partners but does not specify a required communication system. I'd align to whatever tools NantHealth already uses — the plan below reflects industry-standard platforms (Slack, Confluence, email, Zoom) as assumed defaults, ready to swap to the actual tools on day one.</p>
+      </div>
+    </div>
+    <div class="notice-box" role="note">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      <div>
+        <div class="notice-title">Communication tools not specified in the job description</div>
+        <div class="notice-body">The JD outlines collaboration with Product, Customer Success, Support, and Implementation but does not name a specific messaging platform (e.g. Slack, Microsoft Teams, or email). The channel plan below uses assumed industry standards. On day one, I'd align immediately to whatever NantHealth uses and replicate this same structure within those tools.</div>
+      </div>
+    </div>
+    <p class="sec-label">Per-team communication plan</p>
+    <div class="comms-flow">
+
+      <div class="flow-team">
+        <div class="flow-team-header">
+          <div class="flow-team-icon" style="background:#E6F1FB"><i class="ti ti-package" aria-hidden="true" style="color:var(--nh-blue)"></i></div>
+          <div><div class="flow-team-name">Product team</div><div class="flow-team-role">Release coordination · feature documentation · roadmap alignment</div></div>
+        </div>
+        <div class="flow-channels">
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-brand-slack" aria-hidden="true" style="color:#611F69;font-size:15px"></i><span class="fc-tool-name">Slack / Teams</span></div><div class="fc-purpose">Dedicated #training-docs-releases channel for release note drafts, feature flag questions, and documentation review requests</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Async daily — async as needed</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-video" aria-hidden="true" style="color:var(--nh-blue);font-size:15px"></i><span class="fc-tool-name">Zoom / Meet</span></div><div class="fc-purpose">Attend sprint review each release cycle to get ahead of feature changes before they ship to customers</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Bi-weekly sprint review</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-notebook" aria-hidden="true" style="color:#2684FF;font-size:15px"></i><span class="fc-tool-name">Confluence</span></div><div class="fc-purpose">Shared documentation backlog page — tracks every feature with a training or doc deliverable tied to the release date</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Updated each sprint</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-mail" aria-hidden="true" style="color:var(--nh-slate);font-size:15px"></i><span class="fc-tool-name">Email summary</span></div><div class="fc-purpose">Post-release training summary sent to Product PM confirming all documentation is live and linked in the release notes</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Each release</div></div>
+        </div>
+      </div>
+
+      <div class="flow-team">
+        <div class="flow-team-header">
+          <div class="flow-team-icon" style="background:var(--nh-teal-light)"><i class="ti ti-headset" aria-hidden="true" style="color:var(--nh-teal)"></i></div>
+          <div><div class="flow-team-name">Customer Success team</div><div class="flow-team-role">CSAT reporting · provider onboarding · time-to-value tracking</div></div>
+        </div>
+        <div class="flow-channels">
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-brand-slack" aria-hidden="true" style="color:#611F69;font-size:15px"></i><span class="fc-tool-name">Slack / Teams</span></div><div class="fc-purpose">#training-csat channel: share CSAT alerts, Pendo adoption drops, and guide completion reports as they surface — no waiting for a scheduled meeting</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>As data surfaces</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-video" aria-hidden="true" style="color:var(--nh-blue);font-size:15px"></i><span class="fc-tool-name">Weekly sync</span></div><div class="fc-purpose">30-min recurring meeting to review CSAT scores by topic, escalations, and onboarding blockers — the primary feedback loop for training prioritization</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Weekly · 30 min</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-chart-bar" aria-hidden="true" style="color:var(--nh-teal);font-size:15px"></i><span class="fc-tool-name">Pendo reports</span></div><div class="fc-purpose">Share Pendo guide completion dashboards monthly so CS can see exactly which provider cohorts are completing onboarding and which need intervention</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Monthly report</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-file-description" aria-hidden="true" style="color:var(--nh-slate);font-size:15px"></i><span class="fc-tool-name">CSAT dashboard</span></div><div class="fc-purpose">Live Confluence dashboard showing current CSAT by training topic, updated after each survey cycle — CS can access anytime without waiting for a report</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Always live</div></div>
+        </div>
+      </div>
+
+      <div class="flow-team">
+        <div class="flow-team-header">
+          <div class="flow-team-icon" style="background:var(--nh-amber-light)"><i class="ti ti-lifebuoy" aria-hidden="true" style="color:var(--nh-amber)"></i></div>
+          <div><div class="flow-team-name">Support team</div><div class="flow-team-role">Ticket analysis · knowledge base gap detection · FAQ updates</div></div>
+        </div>
+        <div class="flow-channels">
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-brand-slack" aria-hidden="true" style="color:#611F69;font-size:15px"></i><span class="fc-tool-name">Slack / Teams</span></div><div class="fc-purpose">#ticket-to-training channel: Support tags tickets with recurring questions so I can review in real time rather than waiting for the monthly report</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Tagged as tickets arrive</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-ticket" aria-hidden="true" style="color:var(--nh-amber);font-size:15px"></i><span class="fc-tool-name">Ticket review</span></div><div class="fc-purpose">Monthly review of top 5 recurring ticket topics — each one becomes a KB article, Pendo tooltip, or updated user guide in Confluence within the next sprint</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Monthly · 45 min</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-notebook" aria-hidden="true" style="color:#2684FF;font-size:15px"></i><span class="fc-tool-name">Confluence</span></div><div class="fc-purpose">KB article tracker page: shows the status of every article in progress (draft / review / published) so Support knows what's coming and when</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Updated weekly</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-mail" aria-hidden="true" style="color:var(--nh-slate);font-size:15px"></i><span class="fc-tool-name">Publish notification</span></div><div class="fc-purpose">Email notification to Support lead when a new KB article or updated user guide goes live — gives agents an immediate reference to share with users</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Each publication</div></div>
+        </div>
+      </div>
+
+      <div class="flow-team">
+        <div class="flow-team-header">
+          <div class="flow-team-icon" style="background:var(--nh-purple-light)"><i class="ti ti-arrows-right" aria-hidden="true" style="color:var(--nh-purple)"></i></div>
+          <div><div class="flow-team-name">Implementation team</div><div class="flow-team-role">New-customer onboarding · first-session friction · go-live readiness</div></div>
+        </div>
+        <div class="flow-channels">
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-brand-slack" aria-hidden="true" style="color:#611F69;font-size:15px"></i><span class="fc-tool-name">Slack / Teams</span></div><div class="fc-purpose">#implementation-training: I share training resource links before each new-customer go-live so the implementation lead has everything they need in one place</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Before each go-live</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-eye" aria-hidden="true" style="color:var(--nh-purple);font-size:15px"></i><span class="fc-tool-name">Shadow calls</span></div><div class="fc-purpose">Shadow at least two customer implementation calls in the first 30 days to hear the questions providers actually ask — these directly inform Pendo guide content</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Days 1–30 · then quarterly</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-video" aria-hidden="true" style="color:var(--nh-blue);font-size:15px"></i><span class="fc-tool-name">Quarterly sync</span></div><div class="fc-purpose">Review go-live readiness checklist, identify recurring onboarding friction points, and align on upcoming customer cohorts that need customized training</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Quarterly · 60 min</div></div>
+          <div class="flow-channel"><div class="fc-tool"><i class="ti ti-checklist" aria-hidden="true" style="color:var(--nh-slate);font-size:15px"></i><span class="fc-tool-name">Go-live checklist</span></div><div class="fc-purpose">Shared Confluence page per new customer: training status, Pendo guide enabled, KB articles linked, and CSAT baseline set — one place Implementation and I both own</div><div class="fc-freq"><i class="ti ti-clock" aria-hidden="true"></i>Per customer</div></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="sec-label">Escalation path — when something needs to move fast</p>
+    <div class="escalation-box">
+      <div class="esc-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i>How I'd handle urgent training or documentation gaps</div>
+      <div class="esc-row"><div class="esc-step">1</div><div class="esc-content"><div class="esc-action">Immediate Slack / Teams message to the relevant team lead</div><div class="esc-who">Fastest path — no ticket, no meeting. Flag the gap and propose a fix in the same message.</div></div></div>
+      <div class="esc-row"><div class="esc-step">2</div><div class="esc-content"><div class="esc-action">Same-day draft in Confluence if it's a documentation issue</div><div class="esc-who">A draft KB article or updated user guide goes up immediately — even if unpolished — so Support and CS have something to reference while a full fix is built.</div></div></div>
+      <div class="esc-row"><div class="esc-step">3</div><div class="esc-content"><div class="esc-action">Emergency Pendo tooltip if it's a product UX confusion issue</div><div class="esc-who">A one-sentence Pendo tooltip can go live in under an hour. For urgent confusion points surfaced by Support, this is the fastest training intervention available.</div></div></div>
+      <div class="esc-row"><div class="esc-step">4</div><div class="esc-content"><div class="esc-action">Follow-up email summary to all stakeholders once resolved</div><div class="esc-who">Short post-mortem: what the gap was, what was deployed, and what's being built long-term. Keeps everyone aligned without a meeting.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 5 — TOOLS (NEW) -->
+<div class="page" id="pg5">
+  <div class="container">
+    <div class="page-hero">
+      <div class="ph-icon" style="background:var(--nh-green-light)"><i class="ti ti-tool" aria-hidden="true" style="color:var(--nh-green)"></i></div>
+      <div>
+        <div class="ph-eyebrow">Section 05 — Technical tools in this role</div>
+        <h2 class="ph-title">How I'd use every tool named in the job description</h2>
+        <p class="ph-sub">The JD lists eight specific tools and platforms. Below is exactly how I'd use each one — mapped to real tasks in this role, not generic descriptions. Every tool is tied to a specific JD responsibility or success metric.</p>
+      </div>
+    </div>
+    <p class="sec-label">Tools named directly in the job description</p>
+    <div class="tools-grid">
+
+      <div class="tool-card c-blue">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:#E6F1FB"><i class="ti ti-cursor-text" aria-hidden="true" style="color:var(--nh-blue)"></i></div>
+          <div><div class="tool-name">Pendo</div><div class="tool-category">Digital adoption platform</div></div>
+        </div>
+        <div class="tool-jd-quote">"Leverage Pendo to design and deploy in-app guides, tooltips, and walkthroughs that drive user adoption"</div>
+        <ul class="tool-use-list">
+          <li>Build and deploy provider onboarding tooltip sequences for NaviNet's highest-friction workflows (E&amp;B, auth submission)</li>
+          <li>Use Pendo Analytics to track guide completion rates, step-level drop-off, and feature adoption delta by cohort</li>
+          <li>Create segmented guides — new providers vs. returning — so experienced users aren't shown beginner walkthroughs</li>
+          <li>Set up in-app announcements for product releases so providers learn about new features without leaving NaviNet</li>
+          <li>Share Pendo dashboards monthly with Customer Success as the primary adoption metric</li>
+        </ul>
+        <span class="tool-metric" style="background:#E6F1FB;color:#0C4A7A"><i class="ti ti-chart-dots" aria-hidden="true"></i>Measures: guide completion %, feature adoption, support ticket delta</span>
+      </div>
+
+      <div class="tool-card c-green">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:var(--nh-green-light)"><i class="ti ti-device-laptop" aria-hidden="true" style="color:var(--nh-green)"></i></div>
+          <div><div class="tool-name">iSpring</div><div class="tool-category">e-learning authoring tool</div></div>
+        </div>
+        <div class="tool-jd-quote">"Proficiency with e-learning tools (e.g., iSpring, Vyond)"</div>
+        <ul class="tool-use-list">
+          <li>Rebuild the prior authorization training module as a branching iSpring scenario — provider selects a diagnosis, submits an Eviti auth, receives rejection, corrects and resubmits</li>
+          <li>Convert existing PDF job aids into interactive iSpring modules with knowledge checks built in</li>
+          <li>Develop SCORM-compliant modules that upload directly into the LMS for completion tracking</li>
+          <li>Use iSpring's quiz builder to create post-training assessments tied to CSAT and knowledge retention goals</li>
+        </ul>
+        <span class="tool-metric" style="background:var(--nh-green-light);color:#1F6B3A"><i class="ti ti-chart-dots" aria-hidden="true"></i>Measures: knowledge retention, module completion, CSAT improvement</span>
+      </div>
+
+      <div class="tool-card c-teal">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:var(--nh-teal-light)"><i class="ti ti-notebook" aria-hidden="true" style="color:var(--nh-teal)"></i></div>
+          <div><div class="tool-name">Confluence</div><div class="tool-category">Knowledge management system</div></div>
+        </div>
+        <div class="tool-jd-quote">"Organize and optimize content within knowledge management systems (e.g., Confluence, SharePoint)"</div>
+        <ul class="tool-use-list">
+          <li>Primary home for all customer-facing user guides, workflow documentation, and release notes</li>
+          <li>Build a live CSAT dashboard page that CS and Support can access anytime without waiting for a report</li>
+          <li>Maintain a documentation backlog page per Product release — every feature with a training deliverable tracked by status</li>
+          <li>Create and maintain a KB article tracker so Support knows exactly what articles are in draft, review, or published</li>
+          <li>Tag all content by product (NaviNet, Eviti Connect), audience (provider, payer, internal), and last-reviewed date for audit readiness</li>
+        </ul>
+        <span class="tool-metric" style="background:var(--nh-teal-light);color:#005A4D"><i class="ti ti-chart-dots" aria-hidden="true"></i>Measures: KB engagement, content freshness, audit readiness</span>
+      </div>
+
+      <div class="tool-card c-teal">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:var(--nh-teal-light)"><i class="ti ti-brand-windows" aria-hidden="true" style="color:var(--nh-teal)"></i></div>
+          <div><div class="tool-name">SharePoint</div><div class="tool-category">Document management &amp; intranet</div></div>
+        </div>
+        <div class="tool-jd-quote">"Organize and optimize content within knowledge management systems (e.g., Confluence, SharePoint)"</div>
+        <ul class="tool-use-list">
+          <li>House version-controlled training materials, policy documents, and compliance records accessible to internal teams</li>
+          <li>Maintain a training library for Customer Success and Implementation with quick-reference guides and job aids</li>
+          <li>Use SharePoint metadata and search tagging so the right document is findable without knowing the exact filename</li>
+          <li>Archive superseded versions with clear change logs for HIPAA audit readiness</li>
+        </ul>
+        <span class="tool-metric" style="background:var(--nh-teal-light);color:#005A4D"><i class="ti ti-chart-dots" aria-hidden="true"></i>Measures: document retrieval time, version control compliance</span>
+      </div>
+
+      <div class="tool-card c-purple">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:var(--nh-purple-light)"><i class="ti ti-file-code" aria-hidden="true" style="color:var(--nh-purple)"></i></div>
+          <div><div class="tool-name">DITA</div><div class="tool-category">Documentation standard</div></div>
+        </div>
+        <div class="tool-jd-quote">"Proficiency with documentation platforms (e.g., DITA)"</div>
+        <ul class="tool-use-list">
+          <li>Structure user guides and release notes as topic-based, reusable content units — one source, published to multiple formats (HTML, PDF, in-app)</li>
+          <li>Apply DITA's task, concept, and reference topic types to NaviNet workflow documentation so content is modular and updateable without rewriting entire guides</li>
+          <li>Align to DITA standards ensures documentation is audit-ready and regulation-compliant for HIPAA review cycles</li>
+        </ul>
+        <span class="tool-metric" style="background:var(--nh-purple-light);color:#3E2D8F"><i class="ti ti-chart-dots" aria-hidden="true"></i>Measures: content reuse rate, publishing efficiency</span>
+      </div>
+
+      <div class="tool-card c-amber">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:var(--nh-amber-light)"><i class="ti ti-video" aria-hidden="true" style="color:var(--nh-amber)"></i></div>
+          <div><div class="tool-name">Vyond</div><div class="tool-category">Video &amp; animation authoring</div></div>
+        </div>
+        <div class="tool-jd-quote">"Proficiency with e-learning tools (e.g., iSpring, Vyond)"</div>
+        <ul class="tool-use-list">
+          <li>Produce short animated explainer videos (2–3 min) for complex Eviti Connect workflows where a static guide loses the learner</li>
+          <li>Create "what changed" release videos — a 90-second Vyond clip explaining a new feature is faster to consume than a release note for most providers</li>
+          <li>Build provider persona walkthroughs showing the NaviNet workflow from the provider's point of view, not a trainer's</li>
+        </ul>
+        <span class="tool-metric" style="background:var(--nh-amber-light);color:#7A4F10"><i class="ti ti-chart-dots" aria-hidden="true"></i>Measures: video completion rate, CSAT on release communications</span>
+      </div>
+
+      <div class="tool-card c-orange">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:var(--nh-orange-light)"><i class="ti ti-chart-dots-3" aria-hidden="true" style="color:var(--nh-orange)"></i></div>
+          <div><div class="tool-name">Training metrics &amp; adoption data</div><div class="tool-category">CSAT · NPS · adoption rates</div></div>
+        </div>
+        <div class="tool-jd-quote">"Data-driven decision making (training metrics, adoption rates, CSAT/NPS)"</div>
+        <ul class="tool-use-list">
+          <li>Run post-training CSAT surveys after every VILT and module completion — results feed directly into the quarterly training priority decision</li>
+          <li>Track NPS for customer onboarding at the 30-day mark — if NPS is below target, trigger a CS outreach and a targeted Pendo guide</li>
+          <li>Build a monthly training effectiveness report combining Pendo adoption data, LMS completion rates, CSAT scores, and support ticket volume</li>
+          <li>Present this data to leadership in a Confluence dashboard — always live, always current</li>
+        </ul>
+        <span class="tool-metric" style="background:var(--nh-orange-light);color:#7A2F08"><i class="ti ti-chart-dots" aria-hidden="true"></i>Measures: all JD success metrics in one view</span>
+      </div>
+
+      <div class="tool-card c-navy">
+        <div class="tool-header">
+          <div class="tool-icon" style="background:var(--surface-3)"><i class="ti ti-shield-check" aria-hidden="true" style="color:var(--nh-navy)"></i></div>
+          <div><div class="tool-name">HIPAA compliance framework</div><div class="tool-category">Regulatory standard</div></div>
+        </div>
+        <div class="tool-jd-quote">"Ensure all content aligns with healthcare regulatory standards (e.g., HIPAA considerations, audit readiness)"</div>
+        <ul class="tool-use-list">
+          <li>Every user guide, KB article, and release note is tagged with a last-reviewed date and a HIPAA-compliance status in Confluence</li>
+          <li>Assign and track annual HIPAA compliance training for all NaviNet-adjacent staff — completion rates reported to leadership monthly</li>
+          <li>Maintain a documentation audit trail: every content change is version-controlled with the author, date, and change reason logged in SharePoint</li>
+          <li>Coordinate with Clinical and Compliance SMEs before publishing any clinical workflow documentation to ensure regulatory accuracy</li>
+        </ul>
+        <span class="tool-metric" style="background:var(--surface-3);color:var(--nh-navy)"><i class="ti ti-chart-dots" aria-hidden="true"></i>Measures: compliance delinquency rate, audit-ready documentation %</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 6 — ABOUT -->
+<div class="page" id="pg6">
+  <div class="container">
+    <div class="about-hero" role="region" aria-label="About Naya Roquemore">
+      <div class="about-avatar" aria-label="Naya Roquemore initials">NR</div>
+      <div>
+        <h2 class="about-name">Naya Roquemore</h2>
+        <p class="about-role">Senior Training &amp; Documentation Professional — applying for Req #1088</p>
+        <div class="about-contacts">
+          <span class="about-contact"><i class="ti ti-mail" aria-hidden="true"></i>nayaroquemore@gmail.com</span>
+          <span class="about-contact"><i class="ti ti-phone" aria-hidden="true"></i>478-302-6658</span>
+          <span class="about-contact"><i class="ti ti-map-pin" aria-hidden="true"></i>Remote · Virtual · Dallas, TX</span>
+        </div>
+      </div>
+    </div>
+    <p class="sec-label">Skills demonstrated in this module</p>
+    <div class="skills-grid">
+      <div class="skill-card"><div class="skill-label">Training design &amp; delivery (VILT, e-learning, live)</div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:95%;background:var(--nh-blue)"></div></div><div class="skill-pct">95%</div></div>
+      <div class="skill-card"><div class="skill-label">Pendo in-app guidance &amp; analytics</div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%;background:var(--nh-teal)"></div></div><div class="skill-pct">90%</div></div>
+      <div class="skill-card"><div class="skill-label">CSAT gap analysis &amp; data-driven decisions</div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:93%;background:var(--nh-purple)"></div></div><div class="skill-pct">93%</div></div>
+      <div class="skill-card"><div class="skill-label">Technical writing &amp; knowledge base management</div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:91%;background:var(--nh-amber)"></div></div><div class="skill-pct">91%</div></div>
+      <div class="skill-card"><div class="skill-label">Cross-functional stakeholder collaboration</div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:92%;background:var(--nh-blue)"></div></div><div class="skill-pct">92%</div></div>
+      <div class="skill-card"><div class="skill-label">Healthcare domain — payer/provider/clinical workflows</div><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:97%;background:var(--nh-teal)"></div></div><div class="skill-pct">97%</div></div>
+    </div>
+    <p class="sec-label">Certifications &amp; education</p>
+    <div class="certs-row">
+      <span class="cert-pill"><i class="ti ti-certificate" aria-hidden="true"></i>Certified Digital Learning Professional (CDLP)</span>
+      <span class="cert-pill"><i class="ti ti-certificate" aria-hidden="true"></i>Lean Six Sigma Foundations</span>
+      <span class="cert-pill"><i class="ti ti-certificate" aria-hidden="true"></i>Building a HIPAA Compliance Program</span>
+      <span class="cert-pill"><i class="ti ti-certificate" aria-hidden="true"></i>Zendesk Customer Service Professional</span>
+      <span class="cert-pill"><i class="ti ti-school" aria-hidden="true"></i>B.S. Healthcare Administration — WGU (GPA 3.8, exp. Oct 2026)</span>
+      <span class="cert-pill"><i class="ti ti-certificate" aria-hidden="true"></i>CX Foundations &amp; Journey Mapping</span>
+    </div>
+    <div class="closing-box" role="region" aria-label="Closing statement">
+      <h3 class="closing-title">Ready to simplify healthcare at NantHealth</h3>
+      <p class="closing-body">Everything in this module is work I'm ready to do from day one — not hypothetically. I built it around NaviNet and Eviti Connect specifically because I took the time to understand what NantHealth actually does and who your providers and payers actually are. I'd love to walk your team through this live.</p>
+      <a href="mailto:nayaroquemore@gmail.com?subject=NantHealth%20Training%20%26%20Documentation%20Role%20%E2%80%94%20Req%20%231088&body=Hi%20Naya%2C%0A%0AI%20reviewed%20your%20interactive%20training%20module%20and%20would%20love%20to%20connect." class="closing-btn" aria-label="Email Naya Roquemore"><i class="ti ti-mail" aria-hidden="true"></i>Get in touch — nayaroquemore@gmail.com</a>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  Built by Naya Roquemore as an interactive cover letter — NantHealth Senior Training &amp; Documentation Professional · Req #1088 · nayaroquemore@gmail.com
+</footer>
+
+<script>
+var pendoSteps=[
+  {step:'Step 1 of 4',title:'Welcome to NaviNet!',body:'This quick walkthrough guides you through your first eligibility and benefits check. Most providers complete it in under 3 minutes. Start with the highlighted E&B tile above.'},
+  {step:'Step 2 of 4',title:'Select Eligibility & Benefits',body:'The E&B tile (highlighted in blue) is your starting point. Click it to verify a member\'s insurance coverage before submitting a claim or prior authorization request.'},
+  {step:'Step 3 of 4',title:'Enter the member details',body:'Type the member\'s insurance ID and date of birth. NaviNet checks coverage across 1,000+ commercial and Medicaid plans in real time — no phone calls or portal-switching needed.'},
+  {step:'Step 4 of 4',title:'Review the results',body:'Coverage details, co-pays, deductibles, and active authorizations appear instantly. You can print, download, or attach the result to a claim or auth request. That\'s it — you\'re set!'}
+];
+var pendoStep=0;
+
+function nextPendoStep(){
+  pendoStep++;
+  if(pendoStep>=pendoSteps.length){
+    document.getElementById('pendoTooltip').classList.add('hidden');
+    var gc=document.getElementById('guideComplete');
+    gc.style.display='flex';
+    return;
+  }
+  var s=pendoSteps[pendoStep];
+  document.getElementById('pStep').textContent=s.step;
+  document.getElementById('pTitle').textContent=s.title;
+  document.getElementById('pBody').textContent=s.body;
+  for(var i=0;i<4;i++){var d=document.getElementById('pd'+i);if(d)d.className='pendo-dot'+(i===pendoStep?' on':'');}
+  if(pendoStep===3)document.getElementById('pNextBtn').textContent='Finish ✓';
+}
+function skipGuide(){
+  document.getElementById('pendoTooltip').classList.add('hidden');
+  document.getElementById('guideComplete').style.display='flex';
+}
+
+var csatBuilt=false;
+function buildCsat(){
+  if(csatBuilt)return;
+  csatBuilt=true;
+  var ctx=document.getElementById('csatChart');
+  if(!ctx)return;
+  new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:['Auth workflows','Eviti Connect','E&B checks','Claims','Portal nav'],
+      datasets:[
+        {label:'CSAT score',data:[2.8,3.2,3.6,3.9,4.3],backgroundColor:['#D94040','#D94040','#C17F24','#1A6BAF','#00A88F'],borderRadius:5,borderSkipped:false},
+        {label:'Target (4.2)',data:[4.2,4.2,4.2,4.2,4.2],type:'line',borderColor:'#D94040',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+parseFloat(c.parsed.y).toFixed(1)+'/5';}}}},
+      scales:{
+        y:{min:0,max:5,ticks:{stepSize:1,callback:function(v){return v.toFixed(0)+'/5';}},grid:{color:'rgba(0,0,0,0.05)'}},
+        x:{ticks:{autoSkip:false,maxRotation:0,font:{size:11}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function showPage(n){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.hnav-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.mnav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('pg'+n).classList.add('active');
+  document.querySelectorAll('.hnav-btn')[n].classList.add('active');
+  document.querySelectorAll('.mnav-btn')[n].classList.add('active');
+  if(n===2)setTimeout(buildCsat,100);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
